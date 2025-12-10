@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title> PFAvatar: Pose-Fusion 3D Personalized Avatar Reconstruction from Real-World Outfit-of-the-Day Photos</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/joints.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+
+
+
+  <script>
+    let currentIndex = 0;
+    let autoplayInterval = null;
+
+    function updateVideoPosition() {
+      const track = document.getElementById('videoTrack');
+      const containerWidth = document.querySelector('.video-carousel').offsetWidth;
+      track.style.transform = `translateX(-${currentIndex * containerWidth}px)`;
+      updateDots();
+    }
+
+    function nextVideo() {
+      stopAutoplay(); // 手动切换时暂停自动轮播
+      const total = document.querySelectorAll('.video-item').length;
+      currentIndex = (currentIndex + 1) % total;
+      updateVideoPosition();
+    }
+
+    function prevVideo() {
+      stopAutoplay(); // 手动切换时暂停自动轮播
+      const total = document.querySelectorAll('.video-item').length;
+      currentIndex = (currentIndex - 1 + total) % total;
+      updateVideoPosition();
+    }
+
+    function renderDots() {
+      const container = document.getElementById('dotContainer');
+      const total = document.querySelectorAll('.video-item').length;
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.addEventListener('click', () => {
+          stopAutoplay();
+          currentIndex = i;
+          updateVideoPosition();
+        });
+        container.appendChild(dot);
+      }
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+    }
+
+    function startAutoplay(interval = 5000) {
+      autoplayInterval = setInterval(() => {
+        const total = document.querySelectorAll('.video-item').length;
+        currentIndex = (currentIndex + 1) % total;
+        updateVideoPosition();
+      }, interval);
+    }
+
+    function stopAutoplay() {
+      clearInterval(autoplayInterval);
+    }
+
+    window.addEventListener('resize', updateVideoPosition);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDots();
+      updateVideoPosition();
+      startAutoplay(); // 启动自动轮播
+    });
+  </script>
+
+  <script>
+    function initCarousel(wrapper) {
+      const track = wrapper.querySelector('.video-track');
+      const items = wrapper.querySelectorAll('.video-item');
+      const dotsContainer = wrapper.querySelector('.dot-overlay');
+      const prevBtn = wrapper.querySelector('.prev-btn');
+      const nextBtn = wrapper.querySelector('.next-btn');
+      let currentIndex = 0;
+      let autoplayTimer = null;
+
+      function updatePosition() {
+        const width = wrapper.querySelector('.video-carousel').offsetWidth;
+        track.style.transform = `translateX(-${currentIndex * width}px)`;
+        updateDots();
+      }
+
+      function updateDots() {
+        const dots = wrapper.querySelectorAll('.dot');
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
+      }
+
+      function goTo(index) {
+        currentIndex = index;
+        updatePosition();
+        stopAutoplay();
+      }
+
+      function next() {
+        currentIndex = (currentIndex + 1) % items.length;
+        updatePosition();
+      }
+
+      function prev() {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        updatePosition();
+      }
+
+      function renderDots() {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < items.length; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot';
+          dot.addEventListener('click', () => goTo(i));
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function startAutoplay() {
+        autoplayTimer = setInterval(() => next(), 5000);
+      }
+
+      function stopAutoplay() {
+        clearInterval(autoplayTimer);
+      }
+
+      renderDots();
+      updatePosition();
+      startAutoplay();
+
+      prevBtn.addEventListener('click', () => { prev(); stopAutoplay(); });
+      nextBtn.addEventListener('click', () => { next(); stopAutoplay(); });
+      window.addEventListener('resize', updatePosition);
+    }
+
+    // 初始化所有轮播组
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.video-carousel-wrapper').forEach(wrapper => {
+        initCarousel(wrapper);
+      });
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+
+      <!-- Home -->
+      <a class="navbar-item" href="">
+        <span class="icon">
+          <i class="fas fa-home"></i>
+        </span>
+      </a>
+
+      <!-- More Research -->
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">More Research</a>
+
+        <div class="navbar-dropdown">
+
+          <a class="navbar-item" href="https://tele-ai.github.io/CtrlVDiff/">
+            <span class="dnerf">CtrlVDiff</span>
+          </a>
+          <!-- 分割线（可选） -->
+          <hr class="navbar-divider">
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">PFAvatar: Pose-Fusion 3D Personalized Avatar Reconstruction from Real-World Outfit-of-the-Day Photos</h1>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://xdobetter.github.io/">Dianbing Xi</a><sup>1,*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://anguoyuan.github.io/">Guoyuan An</a><sup>2,*</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://jingsenzhu.github.io/">Jingsen Zhu</a><sup>3,*</sup>,
+              </span>
+              <span class="author-block">
+                <p>Zhijian Liu<sup>1</sup>,</p>
+              </span>
+              <span class="author-block">
+                <a href="https://liuyuan-pal.github.io/">Yuan Liu</a><sup>4,</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=Vw5X8yEAAAAJ&hl=en">Ruiyuan Zhang</a><sup>5,</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://github.com/jiayuanlu">Jiayuan Lu</a><sup>1,</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://person.zju.edu.cn/en/yuchihuo">Yuchi Huo</a><sup>1,†</sup>
+              </span>
+              <span class="author-block">
+                <a href="http://www.cad.zju.edu.cn/home/rwang/">Rui Wang</a><sup>1</sup>
+              </span>
+            </div>
+            <p><sup>*</sup> Equal contribution. <sup>†</sup> Corresponding author. </p>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>State Key Laboratory of CAD&CG, Zhejiang University</span><br>
+              <span class="author-block"><sup>2</sup>Independent Contributor</span><br>
+              <span class="author-block"><sup>3</sup>Cornell University</span><br>
+              <span class="author-block"><sup>4</sup>Hong Kong University of Science and Technology</span><br>
+              <span class="author-block"><sup>5</sup>Huawei Technologies Ltd</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2511.12935" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2511.12935" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>ArXiv</span>
+                  </a>
+                </span>
+
+                <span class="link-block">
+                  <a href="https://github.com/xdobetter/OOTD_PFAvatar" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="./static/images/AAAI2026_PFAvatar_Appendix.pdf" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Supp</span>
+                  </a>
+                </span>
+
+<p class="venue">
+  <strong>🎉 The 40th Annual AAAI Conference on Artificial Intelligence (AAAI-2026 Main) 🍻</strong>
+</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+
+        <img id="teaser" src="./static/images/PFAvatar_teaser_web.png" alt="Teaser Image" style="height: 80%;">
+        <h2 class="subtitle has-text-centered">
+          PFAvatar rapidly reconstructs high-fidelity 3D avatars from OOTD photos using pose-aware diffusion model, enabling realistic virtual try-on, animation, and human reenactment with superior detail and robustness.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+
+
+
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            We propose PFAvatar (Pose-Fusion Avatar), a new method that reconstructs high-quality 3D avatars from Outfit of the Day(OOTD) photos, which exhibit diverse poses, occlusions, and complex backgrounds. Our method consists of two stages: (1) fine-tuning a pose-aware diffusion model from few-shot OOTD examples and (2) distilling a 3D avatar represented by a neural radiance field (NeRF). In the first stage, unlike previous methods that segment images into assets (e.g., garments, accessories) for 3D assembly, which is prone to inconsistency, we avoid decomposition and directly model the full-body appearance. By integrating a pre-trained ControlNet for pose estimation and a novel Condition Prior Preservation Loss (CPPL), our method enables end-to-end learning of fine details while mitigating language drift in few-shot training. Our method completes personalization in just 5 minutes, achieving a 48x speed-up compared to previous approaches. In the second stage, we introduce a NeRF-based avatar representation optimized by canonical SMPL-X space sampling and Multi-Resolution 3D-SDS. Compared to mesh-based representations that suffer from resolution-dependent discretization and erroneous occluded geometry, our continuous radiance field can preserve high-frequency textures (e.g., hair) and handle occlusions correctly through transmittance. Experiments demonstrate that PFAvatar outperforms state-of-the-art methods in terms of reconstruction fidelity, detail preservation, and robustness to occlusions/truncations, advancing practical 3D avatar generation from real-world OOTD albums. In addition, the reconstructed 3D avatar supports downstream applications such as virtual try-on, animation, and human video reenactment, further demonstrating the versatility and practical value of our approach.
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+
+      <!-- Paper video. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Video</h2>
+          <div class="publication-video">
+            <video controls autoplay loop muted playsinline style="width: 100%; border-radius: 8px;">
+              <source src="./static/videos/AAAI2026_PFAvatar_1080p.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>      
+      <!--/ Paper video. -->
+
+
+      <!-- Method overview. -->
+      <!-- <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Method overview</h2>
+          <img id="teaser" src="./static/images/fig2_method.jpg" alt="Teaser Image" style="height: 80%;">
+        </div>
+      </div> -->
+    </div>
+  </section>
+
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>
+        @misc{xdb2025pfavatar,
+          title={PFAvatar: Pose-Fusion 3D Personalized Avatar Reconstruction from Real-World Outfit-of-the-Day Photos}, 
+          author={Dianbing Xi and Guoyuan An and Jingsen Zhu and Zhijian Liu and Yuan Liu and Ruiyuan Zhang and Jiayuan Lu and Yuchi Huo and Rui Wang},
+          year={2025},
+          eprint={2511.12935},
+          archivePrefix={arXiv},
+          primaryClass={cs.CV},
+          url={https://arxiv.org/abs/2511.12935}, 
+    }
+
+</code></pre>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+                Thanks to <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> for their excellent website templates.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
